@@ -22,6 +22,6 @@ app.use("/api/customers", CustomerRoute);
 app.use("/api/completedTrip", CompletedTripRoute);
 app.use("/api/ongoingTrip", OngoingTripsRouter);
 
-app.listen(3003, () => {
-  console.log("Listening on Port 3003");
+app.listen(443, () => {
+  console.log("Listening on Port 443");
 });
