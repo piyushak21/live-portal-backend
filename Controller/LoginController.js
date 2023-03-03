@@ -19,10 +19,7 @@ export const login = (req, res) => {
             return res.status(500).send({ ErrorPassComp: err });
           } else {
             if (result) {
-              const token = jwt.sign(
-                { id: data[0].id },
-                process.env.JWT_SECRET
-              );
+              const token = jwt.sign({ id: data[0].id }, "secret");
 
               return res.status(200).send({
                 Message: "Login Successfull",
@@ -42,6 +39,7 @@ export const login = (req, res) => {
   });
 };
 
+/////////////////Signup
 export const signup = (req, res) => {
   const checkuserQuery = "SELECT * FROM users WHERE  username=? OR email=? ";
 

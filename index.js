@@ -1,5 +1,5 @@
 import express from "express";
-import tripmqtt from "./Controller/tripmqtt.js";
+import getMqttData from "./Controller/tripmqtt.js";
 import cors from "cors";
 import LoginRouter from "./Routes/login.js";
 import VehicleRouter from "./Routes/vehicles.js";
@@ -12,7 +12,7 @@ import CompletedTripRoute from "./Routes/completedTrip.js";
 const app = express();
 app.use(express.json());
 app.use(cors());
-tripmqtt();
+getMqttData();
 
 app.use("/api/login", LoginRouter);
 app.use(authetication);
@@ -22,6 +22,6 @@ app.use("/api/customers", CustomerRoute);
 app.use("/api/completedTrip", CompletedTripRoute);
 app.use("/api/ongoingTrip", OngoingTripsRouter);
 
-app.listen(443, () => {
-  console.log("Listening on Port 443");
+app.listen(3001, () => {
+  console.log("Listening on Port 3001");
 });

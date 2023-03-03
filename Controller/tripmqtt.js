@@ -1,7 +1,7 @@
 import mqtt from "mqtt";
 import { db } from "../Config/db.js";
 
-import async, { log } from "async";
+import async from "async";
 
 const getMqttData = () => {
   // MQTT creds
@@ -27,7 +27,7 @@ const getMqttData = () => {
     "SELECT * FROM devices_master WHERE device_type LIKE 'IoT' AND status = '1'";
   db.query(q, (err, results) => {
     if (err) return err;
-    if (results) {
+    if (results != "") {
       results.forEach((row) => {
         let getTopic = "starkennInv3/" + row.device_id + "/data";
         myTopics.push(getTopic);
@@ -53,14 +53,12 @@ const getMqttData = () => {
     try {
       // Use the async.queue() function to handle multiple topics at the same time
       const insertData = async.queue(function (task, callback) {
-        console.log(task.message);
         let jsonData = task.message;
-
+        console.log(jsonData);
         let cq = "SELECT * FROM trip_summary WHERE trip_id = ?";
         db.query(cq, [jsonData.trip_id], (error, results) => {
           if (error) return error;
           if (results.length == 0) {
-            // console.log(results);
             if (
               jsonData.event === "IGS" &&
               jsonData.message === 2 &&
@@ -90,6 +88,7 @@ const getMqttData = () => {
                     console.log("Trip summary insterted!");
                   });
                 } else {
+                  console.log(results, "results");
                   console.log("Vehicle Data not found");
                 }
               });
@@ -102,8 +101,10 @@ const getMqttData = () => {
         if (jsonData.device_id != "EC0000A") {
           let q =
             "SELECT trip_id, event FROM tripdata WHERE trip_id = ? AND event = ?";
+
           db.query(q, [jsonData.trip_id, "IGS"], (err, results) => {
-            if (err) return err;
+            if (err) return console.log(err);
+
             if (results.length >= 0) {
               function updateTripData() {
                 let istTime = jsonData.timestamp - 19800;
